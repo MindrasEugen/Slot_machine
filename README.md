@@ -1,5 +1,7 @@
 # Slot Antico Egitto — Sphinx
 
+🎰 **Gioca online**: https://slot-machine-g6qm.onrender.com/
+
 Slot machine web-based a tema Antico Egitto, distribuita come **PWA** (link diretto, nessuna app store).
 Solo **moneta virtuale**: puro intrattenimento, senza denaro reale né vincite convertibili.
 
