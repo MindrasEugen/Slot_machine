@@ -476,12 +476,17 @@ canvas#reels {
 }
 .account-card h2 { margin: 0; font-family: var(--font-display); color: var(--oro-chiaro); font-size: 20px; }
 .account-msg { margin: 0; min-height: 18px; font-size: 13px; color: var(--led); }
+#account-forms {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 .account-card input {
   width: 100%;
   background: #0d0710;
   border: 1px solid rgba(220, 168, 62, 0.5);
   border-radius: 9px;
-  padding: 10px;
+  padding: 12px 10px;
   color: var(--testo);
   font-size: 14px;
 }
