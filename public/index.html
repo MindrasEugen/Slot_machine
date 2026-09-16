@@ -56,17 +56,16 @@
 
       <section class="control-deck" aria-label="Plancia di controllo">
         <div class="deck-row">
-          <div class="meter"><span class="meter-val" id="lines-val">10</span><span class="meter-label">LINES</span></div>
-          <div class="meter coin-box">
-            <button id="btn-minus" type="button" class="coin-btn" aria-label="Riduci valore moneta">−</button>
-            <div class="coin-mid"><span class="meter-val" id="coin-val">1.00</span><span class="meter-label">COIN</span></div>
-            <button id="btn-plus" type="button" class="coin-btn" aria-label="Aumenta valore moneta">+</button>
+          <div class="meter bet-box">
+            <button id="btn-minus" type="button" class="step-btn" aria-label="Riduci puntata">−</button>
+            <div class="bet-mid"><span class="meter-val" id="bet">10</span><span class="meter-label">BET</span></div>
+            <button id="btn-plus" type="button" class="step-btn" aria-label="Aumenta puntata">+</button>
           </div>
-          <div class="meter"><span class="meter-val" id="bet">10</span><span class="meter-label">BET</span></div>
+          <div class="meter"><span class="meter-val" id="coin-val">1.00</span><span class="meter-label">COIN</span></div>
           <div class="meter win-meter"><span class="meter-val glow" id="win-val">0</span><span class="meter-label">WIN</span></div>
         </div>
         <div class="deck-sub">
-          <span class="linebet-info">Line-bet: <strong id="linebet-val">1</strong> · 10 linee · min 3</span>
+          <span class="linebet-info"><span id="lines-val">10</span> linee · min 3 · line-bet <strong id="linebet-val">1</strong></span>
           <button id="btn-maxbet" type="button" class="btn-maxbet">MAX BET</button>
         </div>
       </section>

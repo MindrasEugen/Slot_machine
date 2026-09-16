@@ -258,8 +258,9 @@
         winMsg.textContent = `Vinci ${result.totalWin} (${result.wins.length} linee)${freeTag}${isBig ? ' 🏆 BIG WIN!' : ''}${bonusTag}${pickTag}`;
         if (bigwinAmount) bigwinAmount.textContent = result.totalWin;
         else bigwinEl.textContent = result.totalWin;
-        bigwinEl.classList.remove('hidden');
-        if (!isBig) setTimeout(() => bigwinEl.classList.add('hidden'), 1800);
+        // Popup Big Win solo da 3x la scommessa in su
+        if (isBig) bigwinEl.classList.remove('hidden');
+        else bigwinEl.classList.add('hidden');
         if (window.EgittoAudio) window.EgittoAudio.win(isBig);
       } else {
         winMsg.textContent = awarded > 0 ? `🐺 ANUBIS! +${awarded} FREE SPINS${pick ? ' + sarcofagi' : ''}${freeTag}` : (pick ? `⚰️ BONUS! Scegli un sarcofago${freeTag}` : `Nessuna vincita — riprova${freeTag}`);

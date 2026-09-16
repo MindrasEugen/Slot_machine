@@ -8,7 +8,7 @@
 - Pagine: `index.html` (gioco) · `paytable.html` · `shop.html` (anteprima, checkout da cablare).
 - Audio Howler (5 effetti sintetizzati) + mute; PWA installabile (icone + SW).
 - Supabase (`cinema-vicino-app`): `"AAA2_balances"` (anonimi) + `"AAA2_profiles"` (nickname + saldo, bonus 1000 alla creazione); sync al max locale/remoto, offline-safe.
-- Mobile fix (2026-09-16): spin fuori dal box tra rulli e plancia (touch 88px), frame rulli 100% su ≤640px, freccia spin centrata, deck a griglia 4 colonne.
+- Mobile fix (2026-09-16): spin fuori dal box tra rulli e plancia (touch 88px), rulli full-bleed senza cornice su ≤640px, freccia spin centrata, deck a 3 celle con stepper su BET.
 
 ## Regole di ingaggio
 
