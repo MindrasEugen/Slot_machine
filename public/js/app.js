@@ -176,9 +176,9 @@
     setButtons(true);
   });
 
-  // Task 28: ricarica bonus +1000 riscattabile una sola volta ogni 24 ore.
+  // Bonus orario: ricarica +1000 riscattabile una volta ogni ora.
   const REFILL_KEY = 'egitto_last_refill';
-  const REFILL_DAY_MS = 24 * 3600 * 1000;
+  const REFILL_MS = 3600 * 1000;
 
   function doSpin() {
     if (spinning) return;
@@ -189,16 +189,15 @@
         const now = Date.now();
         let last = 0;
         try { last = parseInt(localStorage.getItem(REFILL_KEY) || '0', 10) || 0; } catch (e) {}
-        if (now - last >= REFILL_DAY_MS) {
+        if (now - last >= REFILL_MS) {
           try { localStorage.setItem(REFILL_KEY, String(now)); } catch (e) {}
           balance += REFILL_CREDITS;
-          winMsg.textContent = `Bonus giornaliero +${REFILL_CREDITS}! Prossima ricarica tra 24 ore.`;
+          winMsg.textContent = `Bonus orario +${REFILL_CREDITS}! Prossima ricarica tra 1 ora.`;
           renderPanel();
         } else {
-          const left = REFILL_DAY_MS - (now - last);
-          const h = Math.floor(left / 3600000);
-          const m = Math.ceil((left % 3600000) / 60000);
-          winMsg.textContent = `Crediti insufficienti — bonus giornaliero già riscosso, torna tra ${h}h ${m}min.`;
+          const left = REFILL_MS - (now - last);
+          const m = Math.max(1, Math.ceil(left / 60000));
+          winMsg.textContent = `Crediti insufficienti — bonus orario già riscosso, torna tra ${m}min.`;
           renderPanel();
         }
         return;

@@ -35,6 +35,11 @@
       </div>
       <div id="win-msg" class="win-msg" aria-live="polite"></div>
 
+      <!-- Spin fuori dal box: tra rulli e plancia (mobile-first, touch grande) -->
+      <div class="spin-zone">
+        <button id="btn-spin" type="button" class="spin-btn" aria-label="Gira"><span class="spin-inner" aria-hidden="true">⟳</span></button>
+      </div>
+
       <div id="bonus-overlay" class="bonus-overlay hidden" role="dialog" aria-label="Gioco bonus">
         <div class="tomb-title"><span class="flame"></span>BONUS DEI SARCOFAGI<span class="flame"></span></div>
         <p class="tomb-sub">Scegli un sarcofago per rivelare il premio</p>
@@ -57,7 +62,6 @@
             <div class="coin-mid"><span class="meter-val" id="coin-val">1.00</span><span class="meter-label">COIN</span></div>
             <button id="btn-plus" type="button" class="coin-btn" aria-label="Aumenta valore moneta">+</button>
           </div>
-          <button id="btn-spin" type="button" class="spin-btn" aria-label="Gira"><span class="spin-inner">⟳</span></button>
           <div class="meter"><span class="meter-val" id="bet">10</span><span class="meter-label">BET</span></div>
           <div class="meter win-meter"><span class="meter-val glow" id="win-val">0</span><span class="meter-label">WIN</span></div>
         </div>

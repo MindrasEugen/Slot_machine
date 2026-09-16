@@ -4,10 +4,11 @@
 
 - Griglia 5×3 su Canvas, 10 linee fisse, vincita min 3 simboli, **RTP ~95%**, max bet 500.
 - **11 simboli**: Faraone, Sfinge, Piramide, Cleopatra (alti) · 4 plain (bassi) · Wild (sostituisce tutto tranne Anubis) · Anubis scatter (colonna intera: 1→5, 2→10, 3→15 free spin) · Sarcofago Bonus (3+ ovunque → pick 1 di 5).
-- Big Win da 3x la scommessa; bonus giornaliero +1000 una volta ogni 24h.
+- Big Win da 3x la scommessa; bonus orario +1000 una volta ogni ora.
 - Pagine: `index.html` (gioco) · `paytable.html` · `shop.html` (anteprima, checkout da cablare).
 - Audio Howler (5 effetti sintetizzati) + mute; PWA installabile (icone + SW).
 - Supabase (`cinema-vicino-app`): `"AAA2_balances"` (anonimi) + `"AAA2_profiles"` (nickname + saldo, bonus 1000 alla creazione); sync al max locale/remoto, offline-safe.
+- Mobile fix (2026-09-16): spin fuori dal box tra rulli e plancia (touch 88px), frame rulli 100% su ≤640px, freccia spin centrata, deck a griglia 4 colonne.
 
 ## Regole di ingaggio
 
@@ -29,5 +30,5 @@
 
 ## Da fare
 
-1. **Shop Stripe**: checkout test-mode EUR + webhook accredito (serve `sk_test` dell'utente).
+1. **Shop Stripe (IN PAUSA — pagamenti non abilitati)**: checkout test-mode EUR + webhook accredito (serve `sk_test` dell'utente). Shop mostra avviso + pulsanti disabilitati.
 2. **Test e deploy**: prova mobile/desktop, hosting HTTPS per PWA installabile.

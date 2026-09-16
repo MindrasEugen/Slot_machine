@@ -9,7 +9,7 @@ Solo **moneta virtuale**: puro intrattenimento, senza denaro reale né vincite c
 
 - Griglia **5×3** su Canvas, **10 linee** fisse, vincita da **3+ simboli**, RTP ~95%.
 - 11 simboli: Faraone, Sfinge, Piramide, Cleopatra, 4 plain, Wild, Anubis (free spin a colonna intera), Sarcofago (pick-bonus).
-- Big Win da 3x, free spin 5/10/15, bonus giornaliero +1000 ogni 24h.
+- Big Win da 3x, free spin 5/10/15, bonus orario +1000 ogni ora.
 - Account email+password (nickname + saldo su Supabase), audio Howler, pagine Paytable e Shop dedicate.
 
 ## Stack tecnologico

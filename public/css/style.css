@@ -299,11 +299,18 @@ canvas#reels {
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 .deck-row {
+  display: grid;
+  grid-template-columns: 0.9fr 1.5fr 0.9fr 0.9fr;
+  gap: 8px;
+  align-items: stretch;
+}
+.deck-row .meter {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 6px;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 52px;
+  padding: 6px 4px;
 }
 .meter {
   background: #050505;
@@ -326,11 +333,11 @@ canvas#reels {
   color: #fff6c8;
   text-shadow: 0 0 8px var(--oro-chiaro), 0 0 18px var(--oro);
 }
-.coin-box { display: flex; align-items: center; gap: 5px; }
-.coin-mid { text-align: center; min-width: 52px; }
+.coin-box { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+.coin-mid { text-align: center; min-width: 52px; flex: 1; }
 .coin-btn {
-  width: 26px; height: 30px;
-  border-radius: 7px;
+  width: 34px; height: 44px;
+  border-radius: 9px;
   border: 1px solid #fff3c4;
   background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
   color: #231a05;
@@ -342,7 +349,7 @@ canvas#reels {
 .coin-btn:hover { filter: brightness(1.08); }
 .coin-btn:active { transform: scale(0.92); }
 .spin-btn {
-  width: 64px; height: 64px;
+  width: 78px; height: 78px;
   border-radius: 50%;
   border: 2px solid #fff;
   outline: 2px solid var(--oro-scuro);
@@ -352,7 +359,20 @@ canvas#reels {
   padding: 5px;
   cursor: pointer;
   flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transition: transform 0.1s ease, filter 0.15s ease;
+}
+/* Spin fuori dal box: tra rulli e plancia, centrato, touch grande */
+.spin-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 4px;
+}
+.spin-zone .spin-btn {
+  width: 84px; height: 84px;
+  margin: 2px auto;
 }
 .spin-btn:hover:not(:disabled) { filter: brightness(1.07); }
 .spin-btn:active:not(:disabled) { transform: scale(0.94); }
@@ -364,8 +384,15 @@ canvas#reels {
   border-radius: 50%;
   background: radial-gradient(circle at 40% 35%, #2e2e2e, #0a0a0a);
   color: var(--oro-chiaro);
-  font-size: 28px;
+  font-size: 34px;
+  line-height: 1;
+  padding: 0 0 5px 0;
+  margin: 0;
+  text-align: center;
   border: 2px solid rgba(246, 226, 122, 0.5);
+  /* Il glifo ⟳ ha sbilanciamento ottico verso il basso: compensazione */
+  text-indent: 1px;
+  transform: translateY(-1px);
 }
 .spin-btn:disabled { opacity: 0.55; cursor: default; }
 .shop-btn {
@@ -575,6 +602,18 @@ canvas#reels {
   background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
 }
 .shop-card button:disabled { opacity: 0.85; cursor: default; }
+/* Avviso pagamenti non abilitati */
+.shop-notice {
+  margin: 10px 0 2px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  color: #fff6c8;
+  background: rgba(197, 160, 89, 0.12);
+  border: 1px solid rgba(246, 226, 122, 0.45);
+  border-radius: 12px;
+}
 .muted { color: var(--testo-dim); font-size: 13px; }
 .disclaimer {
   margin-top: auto;
@@ -586,6 +625,53 @@ canvas#reels {
 }
 @media (min-width: 480px) {
   .pay-cards { grid-template-columns: 1fr 1fr; }
+}
+/* —— Mobile-first: frame rulli a tutta larghezza, comandi touch —— */
+@media (max-width: 640px) {
+  .layout {
+    max-width: 100%;
+    padding: 8px 8px 16px;
+    gap: 10px;
+  }
+  .cabinet {
+    padding: 4px;
+    border-radius: 16px;
+  }
+  .cabinet-title {
+    margin-bottom: 8px;
+  }
+  .cabinet-title h1 {
+    font-size: clamp(30px, 10vw, 40px);
+  }
+  .reels-recess {
+    width: 100%;
+    margin: 0;
+  }
+  .reels-wrap {
+    width: 100%;
+  }
+  .spin-zone {
+    padding: 12px 0 6px;
+  }
+  .spin-zone .spin-btn {
+    width: 88px; height: 88px;
+  }
+  .control-deck {
+    padding: 10px 8px;
+  }
+  .deck-row {
+    gap: 6px;
+  }
+  .deck-row .meter {
+    min-width: 0;
+  }
+  .meter-val {
+    font-size: 14px;
+  }
+  button, .coin-btn, .spin-btn, .btn-maxbet {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
