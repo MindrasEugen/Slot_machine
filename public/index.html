@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Slot Antico Egitto — Sphinx</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+</head>
+<body>
+  <main class="layout">
+    <!-- Task 32: barra utility in alto (balance, shop, audio, profilo) -->
+    <header class="topbar" aria-label="Barra utente">
+      <div class="meter"><span class="meter-val" id="balance">1000</span><span class="meter-label">BALANCE</span></div>
+      <a href="shop.html" class="shop-btn" aria-label="Apri lo shop">🛒</a>
+      <button id="btn-mute" type="button" class="btn-mute" aria-label="Attiva/disattiva audio">🔊</button>
+      <button id="btn-account" type="button" class="btn-mute" aria-label="Account">👤</button>
+    </header>
+
+    <!-- Cabinet da casinò: cornice oro + titolo + rulli + plancia -->
+    <section class="cabinet" aria-label="Slot machine Sphinx">
+      <header class="cabinet-title">
+        <h1>SPHINX</h1>
+      </header>
+      <div id="freespin-banner" class="freespin-banner hidden" aria-live="polite"><img src="assets/kemet/anubis.png" alt="" aria-hidden="true" class="freespin-anubis">★ FREE SPINS: <span id="freespin-count">0</span> ★</div>
+
+      <div class="reels-recess">
+        <div class="reels-wrap">
+          <canvas id="reels" width="500" height="300" aria-label="Rulli 5x3"></canvas>
+          <div id="bigwin" class="bigwin hidden" aria-live="polite"><img src="assets/kemet/popup-bigwin-text.png" alt="Big Win" class="bigwin-text"><span id="bigwin-amount"></span></div>
+        </div>
+      </div>
+      <div id="win-msg" class="win-msg" aria-live="polite"></div>
+
+      <div id="bonus-overlay" class="bonus-overlay hidden" role="dialog" aria-label="Gioco bonus">
+        <div class="tomb-title"><span class="flame"></span>BONUS DEI SARCOFAGI<span class="flame"></span></div>
+        <p class="tomb-sub">Scegli un sarcofago per rivelare il premio</p>
+        <div id="bonus-win" class="bonus-win hidden">YOU WIN<br><span id="bonus-amount">0</span></div>
+        <div class="sarc-row" id="sarc-row">
+          <button type="button" class="sarc" data-i="0" aria-label="Sarcofago 1"><span class="sarc-face"></span></button>
+          <button type="button" class="sarc" data-i="1" aria-label="Sarcofago 2"><span class="sarc-face"></span></button>
+          <button type="button" class="sarc" data-i="2" aria-label="Sarcofago 3"><span class="sarc-face"></span></button>
+          <button type="button" class="sarc" data-i="3" aria-label="Sarcofago 4"><span class="sarc-face"></span></button>
+          <button type="button" class="sarc" data-i="4" aria-label="Sarcofago 5"><span class="sarc-face"></span></button>
+        </div>
+        <button id="bonus-collect" type="button" class="bonus-collect hidden">RACCOGLI</button>
+      </div>
+
+      <section class="control-deck" aria-label="Plancia di controllo">
+        <div class="deck-row">
+          <div class="meter"><span class="meter-val" id="lines-val">10</span><span class="meter-label">LINES</span></div>
+          <div class="meter coin-box">
+            <button id="btn-minus" type="button" class="coin-btn" aria-label="Riduci valore moneta">−</button>
+            <div class="coin-mid"><span class="meter-val" id="coin-val">1.00</span><span class="meter-label">COIN</span></div>
+            <button id="btn-plus" type="button" class="coin-btn" aria-label="Aumenta valore moneta">+</button>
+          </div>
+          <button id="btn-spin" type="button" class="spin-btn" aria-label="Gira"><span class="spin-inner">⟳</span></button>
+          <div class="meter"><span class="meter-val" id="bet">10</span><span class="meter-label">BET</span></div>
+          <div class="meter win-meter"><span class="meter-val glow" id="win-val">0</span><span class="meter-label">WIN</span></div>
+        </div>
+        <div class="deck-sub">
+          <span class="linebet-info">Line-bet: <strong id="linebet-val">1</strong> · 10 linee · min 3</span>
+          <button id="btn-maxbet" type="button" class="btn-maxbet">MAX BET</button>
+        </div>
+      </section>
+    </section>
+
+    <nav class="page-links" aria-label="Pagine">
+      <a href="paytable.html" class="page-link">📜 Paytable</a>
+      <a href="shop.html" class="page-link">🛒 Shop</a>
+    </nav>
+  </main>
+
+  <footer class="disclaimer">
+    Gioco solo per puro intrattenimento. Non utilizza denaro reale e non offre vincite in denaro convertibile. Solo moneta virtuale.
+  </footer>
+
+  <!-- Task 29: modale account -->
+  <div id="account-overlay" class="account-overlay hidden" role="dialog" aria-label="Account">
+    <div class="account-card">
+      <h2>👤 Account</h2>
+      <p id="account-msg" class="account-msg" aria-live="polite"></p>
+      <div id="account-forms">
+        <input id="acc-nick" type="text" maxlength="24" placeholder="Nickname (solo registrazione)" autocomplete="nickname">
+        <input id="acc-email" type="email" placeholder="Email" autocomplete="email">
+        <input id="acc-pass" type="password" placeholder="Password (min 6 caratteri)" autocomplete="current-password">
+        <div class="account-btns">
+          <button id="acc-login" type="button" class="bonus-collect">ACCEDI</button>
+          <button id="acc-register" type="button" class="bonus-collect">REGISTRATI +1000 🎁</button>
+        </div>
+      </div>
+      <div id="account-profile" class="hidden">
+        <p class="account-hello">Ciao, <strong id="acc-name">?</strong>!</p>
+        <button id="acc-logout" type="button" class="bonus-collect">ESCI</button>
+      </div>
+      <button id="account-close" type="button" class="btn-mute">Chiudi</button>
+    </div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-sync.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/symbols.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>

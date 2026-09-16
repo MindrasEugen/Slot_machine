@@ -1,0 +1,22 @@
+# Dipendenze
+node_modules/
+
+# Segreti locali (chiavi Supabase/Stripe)
+.env
+.env.local
+
+# Sorgenti pack art (pesanti + licenza: vietata la ridistribuzione in forma originale)
+# Gli asset usati dal gioco restano in public/assets/
+image/
+
+# Log e OS
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,593 @@
+/* Task 12 — UI moderna: lusso scuro + oro, vetro, micro-animazioni. Logica invariata. */
+:root {
+  --oro: #dca83e;
+  --oro-scuro: #9a742a;
+  --oro-chiaro: #ffe98a;
+  --nero: #0a0a0a;
+  --panel: rgba(20, 16, 10, 0.72);
+  --pergamena: #f7f0d8;
+  --testo: #f5e6c4;
+  --testo-dim: rgba(245, 230, 196, 0.65);
+  --led: #ffd75e;
+  --radius: 16px;
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  color: var(--testo);
+  /* Task 17: sfondo Kemet così com'è — statico, nessun filtro/animazione */
+  background: url("../assets/kemet/background.jpg") center top / cover no-repeat fixed #0a0a0a;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.layout {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top)) 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: rise 0.5s ease both;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+/* —— Cabinet —— */
+.cabinet {
+  border-radius: 22px;
+  padding: 12px;
+  background: transparent; /* Task 22b: cabinet trasparente, si vede il background */
+  box-shadow: none;
+  transition: box-shadow 0.4s ease;
+}
+.cabinet { position: relative; }
+/* —— Gioco bonus: tomba dei sarcofagi —— */
+.bonus-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 120, 30, 0.25), transparent 55%),
+    linear-gradient(180deg, #241a10, #0d0a06);
+  border: 3px solid var(--oro-chiaro);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 180, 60, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 10px;
+  text-align: center;
+}
+.bonus-overlay.hidden { display: none; }
+.tomb-title {
+  font-family: var(--font-display);
+  font-size: clamp(19px, 5.5vw, 24px);
+  letter-spacing: 0.12em;
+  color: var(--oro-chiaro);
+  text-shadow: 0 2px 0 #000, 0 0 18px rgba(246, 226, 122, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.flame {
+  width: 12px; height: 18px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 50% 70%, #ffe9a3, #ff8c1a 60%, #b83200);
+  animation: flick 0.5s ease-in-out infinite alternate;
+}
+@keyframes flick {
+  from { transform: scale(1); opacity: 0.85; }
+  to { transform: scale(1.15, 1.25); opacity: 1; }
+}
+.tomb-sub { margin: 0; font-size: 13px; color: var(--testo-dim); }
+.bonus-win {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 26px;
+  color: #ffd700;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--oro);
+  border-radius: 10px;
+  padding: 8px 22px;
+  text-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
+  animation: pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.bonus-win.hidden { display: none; }
+.bonus-win span { font-size: 34px; }
+.sarc-row { display: flex; gap: 8px; justify-content: center; }
+.sarc {
+  width: 52px;
+  height: 118px;
+  border-radius: 26px 26px 10px 10px;
+  border: 2px solid #6b4e12;
+  background-color: #1c0f22;
+  background-image: url("../assets/kemet/sarcofago_scelta.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.2), 0 4px 10px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  padding: 0;
+}
+.sarc:hover:not(:disabled) { transform: translateY(-4px); }
+/* Task 25b: faccione CSS sostituito dall'immagine sarcofago_scelta.png */
+.sarc .sarc-face { display: none; }
+.sarc .sarc-face::after { display: none; }
+.sarc.open {
+  border-color: #ff8c1a;
+  box-shadow: 0 0 22px rgba(255, 140, 26, 0.9);
+  cursor: default;
+}
+.sarc.dim { opacity: 0.35; filter: grayscale(0.8); }
+.bonus-collect {
+  margin-top: 4px;
+  border: 1px solid #fff3c4;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: #231a05;
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+  cursor: pointer;
+}
+.bonus-collect.hidden { display: none; }
+.cabinet-title {
+  text-align: center;
+  background: linear-gradient(180deg, rgba(58, 44, 20, 0.92), rgba(12, 9, 5, 0.94));
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(246, 226, 122, 0.35);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.9);
+  padding: 8px 4px 7px;
+}
+.cabinet-title h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(34px, 9vw, 46px);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  font-weight: 900;
+  background: linear-gradient(180deg, #fff6c8 0%, var(--oro-chiaro) 32%, var(--oro) 55%, #7a5f22 80%, var(--oro-chiaro) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.6));
+}
+/* —— Banner free spin (Task 17: hero Anubis affiancato) —— */
+.freespin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  color: #fff6c8;
+  background: rgba(5, 5, 5, 0.85);
+  border: 2px solid var(--oro);
+  border-radius: 10px;
+  padding: 7px 8px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px var(--oro-chiaro), 0 0 22px var(--oro);
+  animation: freespin-blink 1s steps(2, start) infinite;
+}
+.freespin-anubis {
+  height: 44px;
+  width: auto;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+}
+.freespin-banner.hidden { display: none; }
+@keyframes freespin-blink {
+  0%, 100% { box-shadow: 0 0 16px rgba(246, 226, 122, 0.9); }
+  50% { box-shadow: 0 0 3px rgba(246, 226, 122, 0.2); }
+}
+.cabinet.bonus-mode {
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.75),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.55),
+    0 14px 40px rgba(0, 0, 0, 0.75),
+    0 0 46px rgba(255, 215, 0, 0.8);
+}
+.cabinet.bonus-mode .spin-btn { animation: spin-pulse 1s ease-in-out infinite; }
+@keyframes spin-pulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7), 0 0 18px rgba(197, 160, 89, 0.6); }
+  50% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7), 0 0 36px rgba(255, 215, 0, 1); }
+}
+/* —— Rulli (Task 18): la cornice Kemet SOSTITUISCE la vecchia cornice CSS —— */
+.reels-recess {
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.reels-wrap {
+  position: relative;
+  aspect-ratio: 1280 / 864;
+  background: url("../assets/kemet/reel-frame-empty.png") 0 0 / 100% 100% no-repeat;
+}
+/* Canvas incastrato nel foro della cornice (misure dal PNG: foro 69.2%×61.1%) */
+canvas#reels {
+  position: absolute;
+  left: 16%; top: 21.1%;
+  width: 69.2%; height: 61.1%;
+  display: block;
+  border-radius: 14px;
+  background: #170b1d;
+}
+.win-msg {
+  min-height: 22px;
+  text-align: center;
+  color: var(--oro-chiaro);
+  margin: 8px 2px 2px;
+  font-size: 14px;
+  text-shadow: 0 1px 0 #000;
+}
+/* Task 17/18: popup big win Kemet — decor + scritta + importo (nel foro rulli) */
+.bigwin {
+  position: absolute;
+  left: 16%; top: 21.1%;
+  width: 69.2%; height: 61.1%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 12vw, 56px);
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 3px 0 #7a5a00, 0 0 28px rgba(255, 215, 0, 0.85);
+  pointer-events: none;
+  animation: pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.bigwin-text {
+  position: relative;
+  width: min(78%, 280px);
+  height: auto;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
+#bigwin-amount {
+  position: relative;
+  line-height: 1;
+}
+.bigwin.hidden { display: none; }
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+/* —— Task 32: barra utility in alto —— */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(220, 168, 62, 0.4);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.topbar .meter { flex: 1; }
+/* —— Task 34: plancia compatta (priorità alla schermata di gioco) —— */
+.control-deck {
+  background: linear-gradient(180deg, rgba(64, 48, 26, 0.92), rgba(22, 16, 8, 0.94));
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(246, 226, 122, 0.35);
+  border-radius: 12px;
+  padding: 8px;
+  margin-top: 8px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+.deck-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+.meter {
+  background: #050505;
+  border: 1px solid rgba(197, 160, 89, 0.8);
+  border-radius: 8px;
+  padding: 4px 6px;
+  text-align: center;
+  min-width: 50px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 1);
+}
+.meter-val {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--led);
+}
+.meter-label { font-size: 9px; letter-spacing: 0.1em; color: var(--testo-dim); }
+.meter-val.glow {
+  color: #fff6c8;
+  text-shadow: 0 0 8px var(--oro-chiaro), 0 0 18px var(--oro);
+}
+.coin-box { display: flex; align-items: center; gap: 5px; }
+.coin-mid { text-align: center; min-width: 52px; }
+.coin-btn {
+  width: 26px; height: 30px;
+  border-radius: 7px;
+  border: 1px solid #fff3c4;
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+  color: #231a05;
+  font-size: 16px; font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6), inset 0 1px 0 #fff;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.coin-btn:hover { filter: brightness(1.08); }
+.coin-btn:active { transform: scale(0.92); }
+.spin-btn {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  outline: 2px solid var(--oro-scuro);
+  outline-offset: 2px;
+  background: radial-gradient(circle at 35% 30%, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 0 16px rgba(197, 160, 89, 0.6);
+  padding: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+.spin-btn:hover:not(:disabled) { filter: brightness(1.07); }
+.spin-btn:active:not(:disabled) { transform: scale(0.94); }
+.spin-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2e2e2e, #0a0a0a);
+  color: var(--oro-chiaro);
+  font-size: 28px;
+  border: 2px solid rgba(246, 226, 122, 0.5);
+}
+.spin-btn:disabled { opacity: 0.55; cursor: default; }
+.shop-btn {
+  width: 40px; height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 22px;
+  color: #231a05;
+  border: 2px solid #fff3c4;
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s ease;
+}
+.shop-btn:active { transform: scale(0.9); }
+.deck-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--testo-dim);
+}
+.linebet-info strong { color: var(--led); }
+.btn-maxbet {
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+  color: #231a05;
+  border: 1px solid #fff3c4;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+/* Task 20: pulsante mute */
+.btn-mute {
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--testo);
+  border: 1px solid rgba(220, 168, 62, 0.5);
+  border-radius: 9px;
+  padding: 7px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+.btn-mute:active { transform: scale(0.94); }
+/* —— Task 29: modale account —— */
+.account-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.account-overlay.hidden { display: none; }
+.account-card {
+  width: min(100%, 360px);
+  background: linear-gradient(180deg, #2b1531, #150a1a);
+  border: 2px solid var(--oro);
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+}
+.account-card h2 { margin: 0; font-family: var(--font-display); color: var(--oro-chiaro); font-size: 20px; }
+.account-msg { margin: 0; min-height: 18px; font-size: 13px; color: var(--led); }
+.account-card input {
+  width: 100%;
+  background: #0d0710;
+  border: 1px solid rgba(220, 168, 62, 0.5);
+  border-radius: 9px;
+  padding: 10px;
+  color: var(--testo);
+  font-size: 14px;
+}
+.account-btns { display: flex; gap: 8px; }
+.account-btns .bonus-collect { flex: 1; margin-top: 0; }
+.account-hello { margin: 0; font-size: 15px; }
+#account-forms.hidden, #account-profile.hidden { display: none; }
+#account-close { align-self: center; }
+.btn-maxbet:active { transform: scale(0.94); }
+/* —— Task 31: navigazione pagine —— */
+.page-links {
+  display: flex;
+  gap: 8px;
+}
+.page-link {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 14px;
+  color: #231a05;
+  border: 1px solid #fff3c4;
+  border-radius: 12px;
+  padding: 12px 8px;
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.page-link:active { transform: scale(0.97); }
+.back-link {
+  display: inline-block;
+  color: var(--oro-chiaro);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 6px 2px;
+}
+/* —— Paytable a card —— */
+.paytable, .shop {
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-size: 14px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.paytable h2, .shop h2 {
+  font-family: var(--font-display);
+  color: var(--oro-chiaro);
+  margin: 0 0 4px;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+.pay-sub {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--testo-dim);
+}
+.pay-cards { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.pay-cards li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(197, 160, 89, 0.25);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.pay-cards li.scatter { border-color: var(--oro); background: rgba(197, 160, 89, 0.1); }
+.pay-cards li.wild { border-color: var(--oro-chiaro); background: rgba(246, 226, 122, 0.08); }
+.pay-cards img {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  background: #241226;
+  border: 1px solid rgba(220, 168, 62, 0.5);
+  padding: 3px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+/* Task 22: miniature Gemini (cornice propria, scacchiera finta) in cover */
+.pay-cards img.framed {
+  object-fit: cover;
+  padding: 0;
+}
+.pay-cards div { display: flex; flex-direction: column; gap: 2px; }
+.pay-cards strong { font-size: 14px; }
+.pay-cards span { font-size: 13px; color: var(--led); font-variant-numeric: tabular-nums; }
+/* —— Shop —— */
+.shop-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.shop-card {
+  position: relative;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  border-radius: 12px;
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.shop-card.featured { border-color: var(--oro-chiaro); background: rgba(197, 160, 89, 0.12); }
+.shop-card .badge {
+  position: absolute;
+  top: -10px; left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 800;
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro));
+  color: #231a05;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+.shop-card h3 { margin: 4px 0 0; font-size: 13px; }
+.shop-card .credits { margin: 0; font-size: 17px; font-weight: 800; color: var(--led); }
+.shop-card .credits small { font-size: 11px; font-weight: 400; color: var(--testo-dim); }
+.shop-card button {
+  border: 1px solid #fff3c4;
+  border-radius: 9px;
+  padding: 8px 4px;
+  font-weight: 800;
+  color: #231a05;
+  background: linear-gradient(180deg, var(--oro-chiaro), var(--oro) 55%, var(--oro-scuro));
+}
+.shop-card button:disabled { opacity: 0.85; cursor: default; }
+.muted { color: var(--testo-dim); font-size: 13px; }
+.disclaimer {
+  margin-top: auto;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  font-size: 12px;
+  text-align: center;
+  color: var(--testo-dim);
+  border-top: 1px solid rgba(197, 160, 89, 0.35);
+}
+@media (min-width: 480px) {
+  .pay-cards { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .layout { animation: none; }
+}
