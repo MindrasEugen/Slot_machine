@@ -65,6 +65,7 @@
   let bet = BETS[0];
   let grid = engine.spinGrid();
   let lastWinCells = new Set();
+  let lastBonusCols = new Set(); // colonne Anubis che hanno triggerato i free spin
   let lastResult = { totalWin: 0, wins: [] };
   let spinning = false;
 
@@ -130,12 +131,17 @@
       // Task 18: colonna tutta Anubis → un'unica immagine verticale intera
       if (grid[0][c] === 'S' && grid[1][c] === 'S' && grid[2][c] === 'S' &&
           window.EgittoSymbols.drawSpan) {
-        ctx.fillStyle = CELL_BG;
+        const isBonus = lastBonusCols.has(c);
+        ctx.fillStyle = isBonus ? CELL_BG_WIN : CELL_BG;
         ctx.fillRect(c * cw, 0, cw, H);
         window.EgittoSymbols.drawSpan(ctx, 'S', c * cw, 0, cw, H);
-        ctx.strokeStyle = CELL_EDGE;
-        ctx.lineWidth = 2;
+        // Colonna Anubis che ha triggerato: bordo luminoso
+        ctx.save();
+        if (isBonus) { ctx.shadowColor = '#ffb02e'; ctx.shadowBlur = 18; }
+        ctx.strokeStyle = isBonus ? CELL_EDGE_WIN : CELL_EDGE;
+        ctx.lineWidth = isBonus ? 5 : 2;
         ctx.strokeRect(c * cw + 2, 2, cw - 4, H - 4);
+        ctx.restore();
         continue;
       }
       for (let r = 0; r < ROWS; r++) {
@@ -168,15 +174,18 @@
 
   function updateBonusUI() {
     const banner = document.getElementById('freespin-banner');
-    const count = document.getElementById('freespin-count');
+    const badge = document.getElementById('freespin-badge');
     const cabinet = document.querySelector('.cabinet');
     const active = window.EgittoGame.isFreeSpinMode;
+    // Conteggio free spin dentro il pulsante SPIN (il banner sopra i rulli non si usa più)
+    if (banner) banner.classList.add('hidden');
+    if (badge) {
+      badge.textContent = window.EgittoGame.freeSpinsRemaining;
+      badge.classList.toggle('hidden', !active);
+    }
     if (active) {
-      banner.classList.remove('hidden');
-      count.textContent = window.EgittoGame.freeSpinsRemaining;
       cabinet.classList.add('bonus-mode');
     } else {
-      banner.classList.add('hidden');
       cabinet.classList.remove('bonus-mode');
     }
   }
@@ -262,7 +271,9 @@
     if (bonusTimer) { clearTimeout(bonusTimer); bonusTimer = 0; }
     hideWinPopups();
     lastWinCells = new Set();
+    lastBonusCols = new Set();
     setButtons(false);
+    updateBonusUI(); // aggiorna subito il conteggio free spin sul pulsante
     spinning = true;
     if (window.EgittoAudio) window.EgittoAudio.spin();
 
@@ -302,6 +313,27 @@
         const line = cfg.PAYLINES[w.linea - 1];
         for (let i = 0; i < w.count; i++) lastWinCells.add(`${i},${line[i]}`);
       });
+      // Illumina la colonna Anubis completata (trigger free spin)
+      if (awarded > 0) {
+        const sid = (cfg.BONUS && cfg.BONUS.SCATTER_ID) || 'S';
+        for (let c = 0; c < COLS; c++) {
+          let full = true;
+          for (let r = 0; r < ROWS; r++) { if (grid[r][c] !== sid) { full = false; break; } }
+          if (full) {
+            lastBonusCols.add(c);
+            for (let r = 0; r < ROWS; r++) lastWinCells.add(`${c},${r}`);
+          }
+        }
+      }
+      // Illumina i sarcofagi che fanno scattare il bonus (3+ ovunque)
+      if (pick) {
+        const pid = (cfg.BONUS && cfg.BONUS.PICK_ID) || 'B';
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (grid[r][c] === pid) lastWinCells.add(`${c},${r}`);
+          }
+        }
+      }
       drawStatic(lastWinCells);
       const freeTag = isFree ? ' (GRATIS)' : '';
       const bonusTag = awarded > 0 ? ` · 🐺 ANUBIS: +${awarded} FREE SPINS!` : '';
