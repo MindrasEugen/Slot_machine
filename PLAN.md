@@ -5,7 +5,6 @@
 - Griglia 5×3 su Canvas, 10 linee fisse, vincita min 3 simboli, **RTP ~95%**, max bet 500.
 - **11 simboli**: Faraone, Sfinge, Piramide, Cleopatra (alti) · 4 plain (bassi) · Wild (sostituisce tutto tranne Anubis) · Anubis scatter (colonna intera: 1→5, 2→10, 3→15 free spin, colonna illuminata al trigger, conteggio sul pulsante SPIN) · Sarcofago Bonus (3+ ovunque → pick 1 di 5, mult 3/4/6/8/12× bet, icone trigger illuminate, tutte le vincite rivelate dopo la scelta).
 - Big Win sopra 5x la scommessa, Nice Win tra 3x e 5x; popup Free Spin a ogni trigger Anubis (5/10/15 giri); popup Bonus a ogni trigger pick (3+ sarcofagi) prima dell'overlay; bonus orario +1000 una volta ogni ora.
-- Modalità test crediti illimitati (solo locale): apri con `?test=1` e premi TEST ∞, oppure `EgittoTest.unlimited(true)` da console.
 - Pagine: `index.html` (gioco) · `paytable.html` · `shop.html` (avviso pagamenti non abilitati, in pausa).
 - Audio Howler (5 effetti sintetizzati) + mute; PWA installabile (icone + SW).
 - Supabase (`cinema-vicino-app`): `"AAA2_balances"` (anonimi) + `"AAA2_profiles"` (nickname + saldo, bonus 1000 alla creazione); sync al max locale/remoto, offline-safe.
