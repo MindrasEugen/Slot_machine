@@ -151,9 +151,39 @@
     drawWinLines();
   }
 
+  // Modalità test crediti illimitati (solo locale, per i test: non tocca altri utenti).
+  // Si attiva aprendo la pagina con ?test=1 (compare un pulsante TEST in basso a destra)
+  // oppure da console con EgittoTest.unlimited(true/false).
+  const TEST_KEY = 'egitto_test_unlimited';
+  function isUnlimited() {
+    try { return localStorage.getItem(TEST_KEY) === '1'; } catch (e) { return false; }
+  }
+  function setUnlimited(on) {
+    try {
+      if (on) localStorage.setItem(TEST_KEY, '1');
+      else localStorage.removeItem(TEST_KEY);
+    } catch (e) {}
+    renderPanel();
+    const tb = document.getElementById('test-toggle');
+    if (tb) tb.textContent = on ? 'TEST ∞: ON' : 'TEST ∞: OFF';
+  }
+  window.EgittoTest = { unlimited: setUnlimited, isUnlimited };
+  try {
+    if (new URLSearchParams(location.search).get('test') === '1' && !document.getElementById('test-toggle')) {
+      const tb = document.createElement('button');
+      tb.id = 'test-toggle';
+      tb.type = 'button';
+      tb.textContent = isUnlimited() ? 'TEST ∞: ON' : 'TEST ∞: OFF';
+      tb.setAttribute('aria-label', 'Attiva/disattiva crediti illimitati di test');
+      tb.style.cssText = 'position:fixed;right:10px;bottom:10px;z-index:9999;padding:8px 12px;border-radius:10px;border:2px solid #fff3c4;background:#3a2c14;color:#ffd700;font-weight:800;font-size:12px;cursor:pointer;opacity:0.9;';
+      tb.addEventListener('click', () => setUnlimited(!isUnlimited()));
+      document.body.appendChild(tb);
+    }
+  } catch (e) {}
+
   function renderPanel() {
     const coin = bet / cfg.PAYLINES.length;
-    balanceEl.textContent = balance;
+    balanceEl.textContent = isUnlimited() ? '∞' : balance;
     betEl.textContent = bet;
     if (winEl) winEl.textContent = lastResult.totalWin;
     if (lineBetEl) lineBetEl.textContent = coin;
@@ -244,7 +274,7 @@
     if (spinning) return;
     // Task 10: in modalità bonus il giro è gratuito (nessun addebito bet)
     const isFree = window.EgittoGame.beginSpin();
-    if (!isFree) {
+    if (!isFree && !isUnlimited()) {
       if (balance < bet) {
         const now = Date.now();
         let last = 0;
