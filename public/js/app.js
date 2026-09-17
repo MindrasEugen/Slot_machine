@@ -14,8 +14,49 @@
   const coinEl = document.getElementById('coin-val');
   const winMsg = document.getElementById('win-msg');
   const bigwinEl = document.getElementById('bigwin');
+  // Popup Nice Win (3x–5x): stessa posizione/stile del Big Win, altra immagine
+  const nicewinEl = document.getElementById('nicewin');
   // Task 17: importo dentro lo span (il resto del markup è l'artwork Kemet)
   const bigwinAmount = document.getElementById('bigwin-amount');
+  const nicewinAmount = document.getElementById('nicewin-amount');
+  // Popup Free Spin (mostrato a ogni trigger Anubis, con numero di giri vinti)
+  const freespinPopup = document.getElementById('freespin-popup');
+  const freespinAmount = document.getElementById('freespin-amount');
+  // Popup Bonus (mostrato a ogni trigger pick 3+ sarcofagi, prima dell'overlay)
+  const bonusPopup = document.getElementById('bonus-popup');
+  let freespinTimer = 0;
+  let bonusTimer = 0;
+  function hideWinPopups() {
+    bigwinEl.classList.add('hidden');
+    if (nicewinEl) nicewinEl.classList.add('hidden');
+    if (freespinPopup) freespinPopup.classList.add('hidden');
+    if (bonusPopup) bonusPopup.classList.add('hidden');
+  }
+  // Sequenza trigger pick: [popup Free Spin se awarded] -> popup Bonus -> overlay sarcofagi
+  function showBonusSequence(awardedCount, done) {
+    hideWinPopups();
+    const showBonusThenOverlay = () => {
+      if (bonusPopup) bonusPopup.classList.remove('hidden');
+      if (bonusTimer) clearTimeout(bonusTimer);
+      bonusTimer = setTimeout(() => {
+        bonusTimer = 0;
+        if (bonusPopup) bonusPopup.classList.add('hidden');
+        done();
+      }, 3000);
+    };
+    if (awardedCount > 0 && freespinPopup) {
+      if (freespinAmount) freespinAmount.textContent = `+${awardedCount}`;
+      freespinPopup.classList.remove('hidden');
+      if (freespinTimer) clearTimeout(freespinTimer);
+      freespinTimer = setTimeout(() => {
+        freespinTimer = 0;
+        freespinPopup.classList.add('hidden');
+        showBonusThenOverlay();
+      }, 3000);
+    } else {
+      showBonusThenOverlay();
+    }
+  }
   const btnSpin = document.getElementById('btn-spin');
   const btnMax = document.getElementById('btn-maxbet');
 
@@ -148,6 +189,8 @@
       b.classList.remove('open', 'dim');
       b.disabled = false;
       b.dataset.mult = mults[i];
+      const v = b.querySelector('.sarc-val');
+      if (v) { v.textContent = ''; v.classList.add('hidden'); }
     });
     document.getElementById('bonus-win').classList.add('hidden');
     document.getElementById('bonus-collect').classList.add('hidden');
@@ -162,7 +205,15 @@
     const prize = parseInt(b.dataset.mult, 10) * bet;
     balance += prize;
     b.classList.add('open');
-    document.querySelectorAll('#sarc-row .sarc').forEach((o) => { o.disabled = true; if (o !== b) o.classList.add('dim'); });
+    // Rivela tutte le vincite possibili della giocata (scelta + scartate)
+    document.querySelectorAll('#sarc-row .sarc').forEach((o) => {
+      o.disabled = true;
+      const v = o.querySelector('.sarc-val');
+      if (v) {
+        v.textContent = parseInt(o.dataset.mult, 10) * bet;
+        v.classList.remove('hidden');
+      }
+    });
     document.getElementById('bonus-amount').textContent = prize;
     document.getElementById('bonus-win').classList.remove('hidden');
     document.getElementById('bonus-collect').classList.remove('hidden');
@@ -207,7 +258,9 @@
     lastResult = { totalWin: 0, wins: [] };
     renderPanel();
     winMsg.textContent = '…';
-    bigwinEl.classList.add('hidden');
+    if (freespinTimer) { clearTimeout(freespinTimer); freespinTimer = 0; }
+    if (bonusTimer) { clearTimeout(bonusTimer); bonusTimer = 0; }
+    hideWinPopups();
     lastWinCells = new Set();
     setButtons(false);
     spinning = true;
@@ -254,21 +307,77 @@
       const bonusTag = awarded > 0 ? ` · 🐺 ANUBIS: +${awarded} FREE SPINS!` : '';
       const pickTag = pick ? ' · ⚰️ SARCOFAGI!' : '';
       if (result.totalWin > 0) {
-        const isBig = result.totalWin >= bet * 3; // Task 33: big win da 3x la scommessa
-        winMsg.textContent = `Vinci ${result.totalWin} (${result.wins.length} linee)${freeTag}${isBig ? ' 🏆 BIG WIN!' : ''}${bonusTag}${pickTag}`;
+        const isBig = result.totalWin >= bet * 5; // Big win sopra 5x la scommessa
+        const isNice = result.totalWin >= bet * 3; // Nice win sopra 3x (sotto 5x)
+        const niceTag = (isNice && !isBig) ? ' ✨ NICE WIN!' : '';
+        winMsg.textContent = `Vinci ${result.totalWin} (${result.wins.length} linee)${freeTag}${isBig ? ' 🏆 BIG WIN!' : niceTag}${bonusTag}${pickTag}`;
         if (bigwinAmount) bigwinAmount.textContent = result.totalWin;
         else bigwinEl.textContent = result.totalWin;
-        // Popup Big Win solo da 3x la scommessa in su
-        if (isBig) bigwinEl.classList.remove('hidden');
-        else bigwinEl.classList.add('hidden');
+        if (nicewinEl) {
+          if (nicewinAmount) nicewinAmount.textContent = result.totalWin;
+          else nicewinEl.textContent = result.totalWin;
+        }
+        // Popup vincita: Big Win sopra 5x, Nice Win tra 3x e 5x (mai entrambi)
+        const showWinPopup = () => {
+          if (isBig) {
+            bigwinEl.classList.remove('hidden');
+            if (nicewinEl) nicewinEl.classList.add('hidden');
+          } else if (isNice) {
+            bigwinEl.classList.add('hidden');
+            if (nicewinEl) nicewinEl.classList.remove('hidden');
+          } else {
+            hideWinPopups();
+          }
+        };
+        if (awarded > 0 && freespinPopup && !pick) {
+          // Prima il popup Free Spin, poi (se c'è) quello di vincita
+          hideWinPopups();
+          if (freespinAmount) freespinAmount.textContent = `+${awarded}`;
+          freespinPopup.classList.remove('hidden');
+          if (freespinTimer) clearTimeout(freespinTimer);
+          freespinTimer = setTimeout(() => {
+            freespinTimer = 0;
+            freespinPopup.classList.add('hidden');
+            showWinPopup();
+          }, 3000);
+        } else if (!pick) {
+          showWinPopup();
+        }
+        // Se pick: i popup li gestisce showBonusSequence prima dell'overlay
         if (window.EgittoAudio) window.EgittoAudio.win(isBig);
       } else {
         winMsg.textContent = awarded > 0 ? `🐺 ANUBIS! +${awarded} FREE SPINS${pick ? ' + sarcofagi' : ''}${freeTag}` : (pick ? `⚰️ BONUS! Scegli un sarcofago${freeTag}` : `Nessuna vincita — riprova${freeTag}`);
-        bigwinEl.classList.add('hidden');
+        hideWinPopups();
+        if (awarded > 0 && freespinPopup && !pick) {
+          // Trigger free spin senza vincita su linea: solo popup Free Spin
+          if (freespinAmount) freespinAmount.textContent = `+${awarded}`;
+          freespinPopup.classList.remove('hidden');
+          if (freespinTimer) clearTimeout(freespinTimer);
+          freespinTimer = setTimeout(() => {
+            freespinTimer = 0;
+            freespinPopup.classList.add('hidden');
+          }, 3000);
+        }
+        // Se pick: i popup li gestisce showBonusSequence prima dell'overlay
       }
       renderPanel();
       if (pick) {
-        showPickBonus(); // solo premio istantaneo (niente free spin dal pick)
+        // Popup BONUS a ogni trigger pick (dopo eventuale Free Spin),
+        // poi overlay sarcofagi (con eventuale popup vincita sotto)
+        showBonusSequence(awarded, () => {
+          if (result.totalWin > 0) {
+            const wasBig = result.totalWin >= bet * 5;
+            const wasNice = result.totalWin >= bet * 3;
+            if (wasBig) {
+              bigwinEl.classList.remove('hidden');
+              if (nicewinEl) nicewinEl.classList.add('hidden');
+            } else if (wasNice) {
+              bigwinEl.classList.add('hidden');
+              if (nicewinEl) nicewinEl.classList.remove('hidden');
+            }
+          }
+          showPickBonus(); // solo premio istantaneo (niente free spin dal pick)
+        });
         return;
       }
       setButtons(true);

@@ -131,6 +131,24 @@ body {
   cursor: default;
 }
 .sarc.dim { opacity: 0.35; filter: grayscale(0.8); }
+/* Valore rivelato su ogni sarcofago dopo la scelta (premio = mult × bet) */
+.sarc-val {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  color: #ffd700;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--oro);
+  border-radius: 8px;
+  padding: 2px 6px;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+  pointer-events: none;
+}
+.sarc-val.hidden { display: none; }
 .bonus-collect {
   margin-top: 4px;
   border: 1px solid #fff3c4;
@@ -241,7 +259,8 @@ canvas#reels {
   text-shadow: 0 1px 0 #000;
 }
 /* Task 17/18: popup big win Kemet — decor + scritta + importo (nel foro rulli) */
-.bigwin {
+/* Nice Win, Free Spin e Bonus riusano lo stesso layout/posizione del Big Win */
+.bigwin, .nicewin, .freespin-popup, .bonus-popup {
   position: absolute;
   left: 16%; top: 21.1%;
   width: 69.2%; height: 61.1%;
@@ -257,17 +276,17 @@ canvas#reels {
   pointer-events: none;
   animation: pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
 }
-.bigwin-text {
+.bigwin-text, .nicewin-text, .freespin-popup-text, .bonus-popup-text {
   position: relative;
   width: min(78%, 280px);
   height: auto;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
 }
-#bigwin-amount {
+#bigwin-amount, #nicewin-amount, #freespin-amount {
   position: relative;
   line-height: 1;
 }
-.bigwin.hidden { display: none; }
+.bigwin.hidden, .nicewin.hidden, .freespin-popup.hidden, .bonus-popup.hidden { display: none; }
 @keyframes pop {
   from { opacity: 0; transform: scale(0.6); }
   to { opacity: 1; transform: scale(1); }
@@ -672,7 +691,7 @@ canvas#reels {
     width: 100%; height: 100%;
     border-radius: 0;
   }
-  .bigwin {
+  .bigwin, .nicewin, .freespin-popup, .bonus-popup {
     left: 0; top: 0;
     width: 100%; height: 100%;
   }

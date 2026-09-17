@@ -68,9 +68,9 @@ window.EgittoConfig = (() => {
   // + pick 1 di 5 sarcofagi (premio = moltiplicatore × TOTAL BET).
   // COLUMN_P = probabilità per colonna (calibrata via simulazione, ~1% trigger).
   // Mai più di 3 colonne Anubis per spin: tetto garantito in engine.js.
-  // Task 25c: premi pick alzati (media 6.4x) per compensare il blocker di B.
+  // Task 25c: premi pick alzati (media 6.6x) per compensare il blocker di B.
   // B resta puro trigger (pay 0 su linea). RTP totale ~95% (sim 300k).
-  const BONUS = { SCATTER_ID: 'S', SCATTER_MIN: 1, SCATTER_MAX: 3, FREE_SPINS_BY_COUNT: { 1: 5, 2: 10, 3: 15 }, PICK_MULTS: [2, 4, 6, 8, 12], COLUMN_P: 0.002, PICK_ID: 'B', PICK_MIN: 3 };
+  const BONUS = { SCATTER_ID: 'S', SCATTER_MIN: 1, SCATTER_MAX: 3, FREE_SPINS_BY_COUNT: { 1: 5, 2: 10, 3: 15 }, PICK_MULTS: [3, 4, 6, 8, 12], COLUMN_P: 0.002, PICK_ID: 'B', PICK_MIN: 3 };
   const WILD_ID = 'W';
 
   return { SYMBOLS, PAYS, PAYLINES, BETS, START_CREDITS, REFILL_CREDITS, STORAGE_KEY, BONUS, WILD_ID, COLS: 5, ROWS: 3 };

@@ -31,6 +31,9 @@
         <div class="reels-wrap">
           <canvas id="reels" width="500" height="300" aria-label="Rulli 5x3"></canvas>
           <div id="bigwin" class="bigwin hidden" aria-live="polite"><img src="assets/kemet/popup-bigwin-text.png" alt="Big Win" class="bigwin-text"><span id="bigwin-amount"></span></div>
+          <div id="nicewin" class="nicewin hidden" aria-live="polite"><img src="assets/kemet/NICE_WIN_transparent.png" alt="Nice Win" class="nicewin-text"><span id="nicewin-amount"></span></div>
+          <div id="freespin-popup" class="freespin-popup hidden" aria-live="polite"><img src="assets/kemet/FREE_SPIN_transparent.png" alt="Free Spin" class="freespin-popup-text"><span id="freespin-amount"></span></div>
+          <div id="bonus-popup" class="bonus-popup hidden" aria-live="polite"><img src="assets/kemet/BONUS_transparent.png" alt="Bonus" class="bonus-popup-text"></div>
         </div>
       </div>
       <div id="win-msg" class="win-msg" aria-live="polite"></div>
@@ -45,11 +48,11 @@
         <p class="tomb-sub">Scegli un sarcofago per rivelare il premio</p>
         <div id="bonus-win" class="bonus-win hidden">YOU WIN<br><span id="bonus-amount">0</span></div>
         <div class="sarc-row" id="sarc-row">
-          <button type="button" class="sarc" data-i="0" aria-label="Sarcofago 1"><span class="sarc-face"></span></button>
-          <button type="button" class="sarc" data-i="1" aria-label="Sarcofago 2"><span class="sarc-face"></span></button>
-          <button type="button" class="sarc" data-i="2" aria-label="Sarcofago 3"><span class="sarc-face"></span></button>
-          <button type="button" class="sarc" data-i="3" aria-label="Sarcofago 4"><span class="sarc-face"></span></button>
-          <button type="button" class="sarc" data-i="4" aria-label="Sarcofago 5"><span class="sarc-face"></span></button>
+          <button type="button" class="sarc" data-i="0" aria-label="Sarcofago 1"><span class="sarc-face"></span><span class="sarc-val hidden"></span></button>
+          <button type="button" class="sarc" data-i="1" aria-label="Sarcofago 2"><span class="sarc-face"></span><span class="sarc-val hidden"></span></button>
+          <button type="button" class="sarc" data-i="2" aria-label="Sarcofago 3"><span class="sarc-face"></span><span class="sarc-val hidden"></span></button>
+          <button type="button" class="sarc" data-i="3" aria-label="Sarcofago 4"><span class="sarc-face"></span><span class="sarc-val hidden"></span></button>
+          <button type="button" class="sarc" data-i="4" aria-label="Sarcofago 5"><span class="sarc-face"></span><span class="sarc-val hidden"></span></button>
         </div>
         <button id="bonus-collect" type="button" class="bonus-collect hidden">RACCOGLI</button>
       </div>
