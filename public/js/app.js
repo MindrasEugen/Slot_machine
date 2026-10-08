@@ -24,6 +24,9 @@
   const freespinAmount = document.getElementById('freespin-amount');
   // Popup Bonus (mostrato a ogni trigger pick 3+ sarcofagi, prima dell'overlay)
   const bonusPopup = document.getElementById('bonus-popup');
+  // Popup riepilogo fine free spin: "You Win" + totale vinto durante i giri gratis
+  const fswinEl = document.getElementById('fswin');
+  const fswinAmount = document.getElementById('fswin-amount');
   let freespinTimer = 0;
   let bonusTimer = 0;
   function hideWinPopups() {
@@ -31,6 +34,7 @@
     if (nicewinEl) nicewinEl.classList.add('hidden');
     if (freespinPopup) freespinPopup.classList.add('hidden');
     if (bonusPopup) bonusPopup.classList.add('hidden');
+    if (fswinEl) fswinEl.classList.add('hidden');
   }
   // Sequenza trigger pick: [popup Free Spin se awarded] -> popup Bonus -> overlay sarcofagi
   function showBonusSequence(awardedCount, done) {
@@ -68,6 +72,10 @@
   let lastBonusCols = new Set(); // colonne Anubis che hanno triggerato i free spin
   let lastResult = { totalWin: 0, wins: [] };
   let spinning = false;
+  // Totale vinto durante la sessione di free spin corrente (linee + sarcofagi)
+  let freeSpinTotal = 0;
+  let pickIsFree = false;        // il pick in corso è nato durante un free spin
+  let pendingFsSummary = false;  // mostrare il riepilogo dopo il collect del pick
 
   // Task 18/22: celle con sfondo prugna + bordo oro (il cabinet è trasparente,
   // le icone restano nei loro riquadri). Box simboli al 90% (Task 22).
@@ -220,6 +228,18 @@
     }
   }
 
+  // Riepilogo fine free spin: stesso popup animato di Nice/Big Win
+  function showFreeSpinSummary() {
+    const total = freeSpinTotal;
+    freeSpinTotal = 0;
+    pendingFsSummary = false;
+    hideWinPopups();
+    if (fswinAmount) fswinAmount.textContent = total;
+    if (fswinEl) fswinEl.classList.remove('hidden');
+    winMsg.textContent = `Free spin terminati — hai vinto ${total}`;
+    if (window.EgittoAudio) window.EgittoAudio.win(true);
+  }
+
   // Task 13: pick-bonus sarcofagi (premio istantaneo, poi free spin)
   let pendingPick = false;
   function showPickBonus() {
@@ -243,6 +263,7 @@
     if (window.EgittoAudio) window.EgittoAudio.click();
     const prize = parseInt(b.dataset.mult, 10) * bet;
     balance += prize;
+    if (pickIsFree) freeSpinTotal += prize;
     b.classList.add('open');
     // Rivela tutte le vincite possibili della giocata (scelta + scartate)
     document.querySelectorAll('#sarc-row .sarc').forEach((o) => {
@@ -263,6 +284,7 @@
     document.getElementById('bonus-overlay').classList.add('hidden');
     updateBonusUI();
     renderPanel();
+    if (pendingFsSummary) showFreeSpinSummary();
     setButtons(true);
   });
 
@@ -337,6 +359,12 @@
       const awarded = window.EgittoGame.checkBonusTrigger(finalGrid);
       const pick = window.EgittoGame.checkPickTrigger(finalGrid);
       window.EgittoGame.endSpin();
+      // Conteggio vincite free spin: nuova sessione azzera, i giri gratis accumulano
+      if (!isFree && awarded > 0) freeSpinTotal = 0;
+      if (isFree) freeSpinTotal += result.totalWin;
+      pickIsFree = isFree && pick;
+      // Ultimo free spin giocato (nessun retrigger): riepilogo finale
+      const fsEnded = isFree && !window.EgittoGame.isFreeSpinMode;
       updateBonusUI();
       // evidenzia celle vincenti (primi `count` della linea)
       result.wins.forEach((w) => {
@@ -423,6 +451,17 @@
         // Se pick: i popup li gestisce showBonusSequence prima dell'overlay
       }
       renderPanel();
+      if (fsEnded) {
+        if (pick) {
+          pendingFsSummary = true; // dopo il collect dei sarcofagi
+        } else {
+          // Riepilogo al posto del popup Nice/Big del singolo giro
+          showFreeSpinSummary();
+          setButtons(false);
+          setTimeout(() => setButtons(true), 2500);
+          return;
+        }
+      }
       if (pick) {
         // Popup BONUS a ogni trigger pick (dopo eventuale Free Spin),
         // poi overlay sarcofagi (con eventuale popup vincita sotto)
