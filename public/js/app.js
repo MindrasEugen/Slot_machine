@@ -589,6 +589,11 @@
     const pass = (document.getElementById('acc-pass') || {}).value || '';
     const nick = (document.getElementById('acc-nick') || {}).value || '';
     if (!email || !pass) { say('Inserisci email e password.'); return; }
+    const adult = document.getElementById('acc-adult');
+    if (mode === 'register' && !(adult && adult.checked)) {
+      say('Per registrarti conferma di avere almeno 18 anni e di accettare la Privacy Policy.');
+      return;
+    }
     say('…');
     try {
       const r = mode === 'register'
@@ -617,6 +622,54 @@
     syncAccountModal();
     if (accOverlay) accOverlay.classList.add('hidden');
   });
+  // Eliminazione account in app: conferma in due passi (niente dialog del browser)
+  const accDelete = document.getElementById('acc-delete');
+  const accDeleteBox = document.getElementById('acc-delete-confirm');
+  const showDeleteBox = (on) => {
+    if (accDeleteBox) accDeleteBox.classList.toggle('hidden', !on);
+    if (accDelete) accDelete.classList.toggle('hidden', on);
+  };
+  if (accDelete) accDelete.addEventListener('click', () => { clickSnd(); say(''); showDeleteBox(true); });
+  const accDeleteNo = document.getElementById('acc-delete-no');
+  if (accDeleteNo) accDeleteNo.addEventListener('click', () => showDeleteBox(false));
+  const accDeleteYes = document.getElementById('acc-delete-yes');
+  if (accDeleteYes) accDeleteYes.addEventListener('click', async () => {
+    if (!window.EgittoAuth) return;
+    accDeleteYes.disabled = true;
+    say('Eliminazione in corso…');
+    try {
+      const r = await window.EgittoAuth.deleteAccount();
+      if (r && r.ok) {
+        showDeleteBox(false);
+        syncAccountModal();
+        say('Account eliminato. I tuoi dati di gioco sono stati cancellati.');
+      } else {
+        say((r && r.error) || 'Eliminazione non riuscita, riprova.');
+      }
+    } catch (e) { say('Errore di rete, riprova.'); }
+    accDeleteYes.disabled = false;
+  });
+  if (btnAccount) btnAccount.addEventListener('click', () => showDeleteBox(false));
+
+  // Verifica età al primo avvio (18+): finché non confermata il gioco resta coperto
+  const AGE_KEY = 'egitto_age_ok';
+  const ageGate = document.getElementById('age-gate');
+  let ageOk = false;
+  try { ageOk = localStorage.getItem(AGE_KEY) === '1'; } catch (e) {}
+  if (ageGate && !ageOk) ageGate.classList.remove('hidden');
+  const ageYes = document.getElementById('age-yes');
+  if (ageYes) ageYes.addEventListener('click', () => {
+    try { localStorage.setItem(AGE_KEY, '1'); } catch (e) {}
+    if (ageGate) ageGate.classList.add('hidden');
+  });
+  const ageNo = document.getElementById('age-no');
+  if (ageNo) ageNo.addEventListener('click', () => {
+    const m = document.getElementById('age-msg');
+    if (m) m.textContent = 'Spiacenti, questo gioco è riservato ai maggiori di 18 anni.';
+    if (ageYes) ageYes.classList.add('hidden');
+    ageNo.classList.add('hidden');
+  });
+
   paintAccountBtn();
   // Task 7: precarica i PNG; al completamento ridisegna (fallback se mancano).
   if (window.EgittoSymbols && window.EgittoSymbols.preloadSymbolImages) {

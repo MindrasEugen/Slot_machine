@@ -1,0 +1,8 @@
+{
+  "appId": "com.mindras.slotegitto",
+  "appName": "Slot Antico Egitto",
+  "webDir": "public",
+  "android": {
+    "backgroundColor": "#1a0f00"
+  }
+}

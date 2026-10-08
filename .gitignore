@@ -4,6 +4,8 @@ node_modules/
 # Segreti locali (chiavi Supabase/Stripe)
 .env
 .env.local
+# Config pubblica generata dal .env per l'app nativa
+public/js/public-config.js
 
 # Sorgenti pack art (pesanti + licenza: vietata la ridistribuzione in forma originale)
 # Gli asset usati dal gioco restano in public/assets/

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Elimina account — Slot Antico Egitto</title>
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main class="layout">
+    <a href="index.html" class="back-link">← Torna al gioco</a>
+    <article class="legal">
+      <h2>Elimina account</h2>
+      <p>Da questa pagina puoi eliminare il tuo account di <strong>Sphinx — Slot Antico Egitto</strong> anche senza usare l'app.</p>
+      <p>Verranno cancellati definitivamente <strong>nickname e saldo di monete virtuali</strong>. L'operazione non può essere annullata. Dettagli nella <a href="privacy.html#eliminazione">Privacy Policy</a>.</p>
+
+      <form id="del-form" class="account-card legal-form" novalidate>
+        <input id="del-email" type="email" placeholder="Email dell'account" autocomplete="email" required>
+        <input id="del-pass" type="password" placeholder="Password" autocomplete="current-password" required>
+        <label class="acc-check"><input id="del-confirm" type="checkbox"><span>Ho capito che l'eliminazione è definitiva</span></label>
+        <button id="del-submit" type="submit" class="btn-danger">ELIMINA DEFINITIVAMENTE</button>
+        <p id="del-msg" class="account-msg" aria-live="polite"></p>
+      </form>
+
+      <p class="muted">Non ricordi la password? Scrivi a <a href="mailto:M.E.T.dev2026@gmail.com">M.E.T.dev2026@gmail.com</a> dall'indirizzo email dell'account e chiedi l'eliminazione.</p>
+    </article>
+  </main>
+  <footer class="disclaimer">
+    <strong class="age-tag">18+</strong> Gioco riservato ai maggiorenni, solo per intrattenimento. Le monete virtuali non hanno valore in denaro.
+  </footer>
+  <script src="js/vendor/supabase.min.js"></script>
+  <script src="js/public-config.js" onerror="void 0"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/delete-account.js"></script>
+  <script src="js/native-back.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 // Task 2 — Configurazione gioco (Vanilla JS, no moduli per compatibilità PWA/file).
 // Griglia 5x3, 10 linee fisse, vincita min 3.
-// Task 17 (Kemet v2, revertibile — backup in Temp/opencode/task17-backup).
-// Task 18 (revertibile — backup in Temp/opencode/task18-backup):
+// Task 17 (Kemet v2).
+// Task 18:
 // 10 simboli Kemet, zero SVG sui rulli — 4 ALTI con badge + 4 BASSI plain
 // (stesso motivo, valore dallo sfondo) + Wild + Anubis scatter a colonna intera.
 // Faraone/Moneta/Sfinge rimossi dal gioco.
@@ -9,7 +9,7 @@ window.EgittoConfig = (() => {
   // Task 18 — pesi/pay calibrati via simulazione (500k spin, vedi PLAN.md):
   // pesi concentrati sui low (profilo C), alti x1.3, plain con 3x fermo a
   // 10/9/8/7 e 4x/5x potenziati. Linee ~90,9% + bonus ~3,3% = TOT ~94,2%.
-  // Task 22: i 4 ALTI sono i Gemini (stessi pesi/pay dei badge che sostituiscono).
+  // Task 22: i 4 ALTI sono le miniature con cornice (stessi pesi/pay dei badge che sostituiscono).
   // Task 25: nuovo simbolo B = Sarcofago (trigger pick-bonus 3+ ovunque).
   // ARTE PROVVISORIA (symbol-eye badged) finché l'utente consegna sarcofago.png.
   // Anubis → solo free spin; pick → solo premio istantaneo (niente FS).

@@ -620,7 +620,7 @@ canvas#reels {
   flex-shrink: 0;
   object-fit: contain;
 }
-/* Task 22: miniature Gemini (cornice propria, scacchiera finta) in cover */
+/* Task 22: miniature con cornice propria (scacchiera finta) in cover */
 .pay-cards img.framed {
   object-fit: cover;
   padding: 0;
@@ -784,3 +784,49 @@ canvas#reels {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .layout { animation: none; }
 }
+
+/* —— 18+, privacy ed eliminazione account —— */
+.age-tag {
+  display: inline-block;
+  padding: 1px 7px;
+  border: 2px solid #e04040;
+  border-radius: 999px;
+  color: #ff6b6b;
+  font-weight: 900;
+  font-size: 0.9em;
+  line-height: 1.3;
+  margin-right: 4px;
+}
+.age-gate { z-index: 100; background: rgba(0, 0, 0, 0.92); }
+.age-gate .account-card p { margin: 0; font-size: 14px; line-height: 1.45; }
+.legal-links { display: block; margin-top: 6px; }
+.legal-links a, .acc-check a { color: var(--oro-chiaro); }
+.acc-check { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; line-height: 1.4; text-align: left; }
+.acc-check input { width: auto; padding: 0; margin-top: 2px; flex: none; }
+.btn-danger {
+  background: transparent;
+  border: 1px solid #c94a4a;
+  color: #ff8a8a;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.delete-confirm { display: flex; flex-direction: column; gap: 8px; }
+.delete-confirm p { margin: 0; font-size: 13px; line-height: 1.4; }
+.delete-confirm.hidden { display: none; }
+#account-profile { display: flex; flex-direction: column; gap: 8px; }
+#account-profile.hidden { display: none; }
+/* Pagine testuali: privacy policy ed eliminazione account */
+.legal {
+  max-width: 720px; margin: 8px auto 16px; padding: 12px 18px 24px;
+  line-height: 1.55; font-size: 14.5px;
+  background: rgba(12, 6, 16, 0.9);
+  border: 1px solid rgba(220, 168, 62, 0.45);
+  border-radius: 14px;
+}
+.legal h2 { font-family: var(--font-display); color: var(--oro-chiaro); margin: 8px 0 4px; }
+.legal h3 { font-family: var(--font-display); color: var(--oro-chiaro); font-size: 16px; margin: 20px 0 6px; }
+.legal ul { padding-left: 20px; margin: 6px 0; }
+.legal a { color: var(--oro-chiaro); }
+.legal-form { margin: 16px auto; }

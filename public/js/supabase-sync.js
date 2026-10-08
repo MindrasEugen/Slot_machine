@@ -21,16 +21,11 @@ window.EgittoCloud = (() => {
 
   async function init(localBalance) {
     try {
-      const rc = await fetch('api/config');
-      if (!rc.ok) return { ok: false, reason: 'no-config' };
-      const { supabaseUrl, supabaseKey } = await rc.json();
-      if (!supabaseUrl || !supabaseKey) return { ok: false, reason: 'no-config' };
-      if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
-        return { ok: false, reason: 'no-lib' };
-      }
+      const shared = window.EgittoSupabase && await window.EgittoSupabase.getClient();
+      if (!shared) return { ok: false, reason: 'no-config' };
       const id = getClientId();
       if (!id) return { ok: false, reason: 'no-id' };
-      client = window.supabase.createClient(supabaseUrl, supabaseKey);
+      client = shared;
 
       const { data, error } = await client
         .from('AAA2_balances').select('balance').eq('client_id', id).maybeSingle();

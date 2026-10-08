@@ -8,12 +8,8 @@ window.EgittoAuth = (() => {
 
   async function getClient() {
     if (client) return client;
-    const rc = await fetch('api/config');
-    if (!rc.ok) return null;
-    const { supabaseUrl, supabaseKey } = await rc.json();
-    if (!supabaseUrl || !supabaseKey) return null;
-    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) return null;
-    client = window.supabase.createClient(supabaseUrl, supabaseKey);
+    if (!window.EgittoSupabase) return null;
+    client = await window.EgittoSupabase.getClient();
     return client;
   }
 
@@ -104,8 +100,22 @@ window.EgittoAuth = (() => {
     }, 1500);
   }
 
+  // Eliminazione account (requisito store): la funzione SQL cancella il
+  // profilo slot e, se l'utente non usa altre app del progetto, anche l'utente.
+  async function deleteAccount() {
+    if (!client || !session) return { ok: false, error: "Accedi per eliminare l'account." };
+    clearTimeout(pushTimer);
+    const { data, error } = await client.rpc('aaa2_delete_my_account');
+    if (error) return { ok: false, error: 'Eliminazione non riuscita, riprova.' };
+    // L'utente può non esistere più lato server: chiudi solo la sessione locale
+    try { await client.auth.signOut({ scope: 'local' }); } catch (e) {}
+    session = null;
+    profile = null;
+    return { ok: true, result: data };
+  }
+
   function isLogged() { return !!(session && profile); }
   function getNickname() { return profile ? profile.nickname : null; }
 
-  return { init, register, login, logout, push, isLogged, getNickname };
+  return { init, register, login, logout, deleteAccount, push, isLogged, getNickname };
 })();

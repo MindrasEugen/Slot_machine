@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon-192.png" />
   <link rel="stylesheet" href="css/style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+  <script src="js/vendor/howler.min.js"></script>
 </head>
 <body>
   <main class="layout">
@@ -82,7 +82,8 @@
   </main>
 
   <footer class="disclaimer">
-    Gioco solo per puro intrattenimento. Non utilizza denaro reale e non offre vincite in denaro convertibile. Solo moneta virtuale.
+    <strong class="age-tag">18+</strong> Gioco riservato ai maggiorenni, solo per intrattenimento. Si vincono solo monete virtuali, che non hanno valore in denaro e non possono essere riscattate né convertite in denaro o premi reali. Vincere in questo gioco non significa vincere nel gioco d'azzardo reale.
+    <span class="legal-links"><a href="privacy.html">Privacy Policy</a> · <a href="delete-account.html">Elimina account</a></span>
   </footer>
 
   <!-- Task 29: modale account -->
@@ -94,6 +95,7 @@
         <input id="acc-nick" type="text" maxlength="24" placeholder="Nickname (solo registrazione)" autocomplete="nickname">
         <input id="acc-email" type="email" placeholder="Email" autocomplete="email">
         <input id="acc-pass" type="password" placeholder="Password (min 6 caratteri)" autocomplete="current-password">
+        <label class="acc-check"><input id="acc-adult" type="checkbox"><span>Ho almeno 18 anni e accetto la <a href="privacy.html">Privacy Policy</a> (solo registrazione)</span></label>
         <div class="account-btns">
           <button id="acc-login" type="button" class="bonus-collect">ACCEDI</button>
           <button id="acc-register" type="button" class="bonus-collect">REGISTRATI +1000 🎁</button>
@@ -102,13 +104,39 @@
       <div id="account-profile" class="hidden">
         <p class="account-hello">Ciao, <strong id="acc-name">?</strong>!</p>
         <button id="acc-logout" type="button" class="bonus-collect">ESCI</button>
+        <button id="acc-delete" type="button" class="btn-danger">Elimina account</button>
+        <div id="acc-delete-confirm" class="delete-confirm hidden">
+          <p>Eliminare definitivamente l'account? Nickname e saldo salvati verranno cancellati e non potranno essere recuperati.</p>
+          <div class="account-btns">
+            <button id="acc-delete-yes" type="button" class="btn-danger">SÌ, ELIMINA</button>
+            <button id="acc-delete-no" type="button" class="btn-mute">Annulla</button>
+          </div>
+        </div>
       </div>
       <button id="account-close" type="button" class="btn-mute">Chiudi</button>
     </div>
   </div>
 
+  <!-- Verifica età al primo avvio: l'app è riservata ai maggiorenni -->
+  <div id="age-gate" class="account-overlay age-gate hidden" role="dialog" aria-modal="true" aria-label="Verifica età">
+    <div class="account-card">
+      <h2><span class="age-tag">18+</span> Solo per maggiorenni</h2>
+      <p>Sphinx è un gioco riservato a persone di <strong>almeno 18 anni</strong>.</p>
+      <p>Si vincono solo monete virtuali, senza valore in denaro: non possono essere riscattate né convertite in denaro o premi reali.</p>
+      <p id="age-msg" class="account-msg" aria-live="polite"></p>
+      <div class="account-btns">
+        <button id="age-yes" type="button" class="bonus-collect">HO 18+ ANNI</button>
+        <button id="age-no" type="button" class="btn-mute">Ho meno di 18 anni</button>
+      </div>
+      <p class="legal-links"><a href="privacy.html">Privacy Policy</a></p>
+    </div>
+  </div>
+
   <script src="js/audio.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/vendor/supabase.min.js"></script>
+  <!-- Generato da scripts/build-public-config.js (solo app nativa; sul web può mancare) -->
+  <script src="js/public-config.js" onerror="void 0"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/supabase-sync.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/config.js"></script>
@@ -117,9 +145,12 @@
   <script src="js/game.js"></script>
   <script src="js/app.js"></script>
   <script>
-    if ('serviceWorker' in navigator) {
+    // Nell'app nativa (Capacitor) i file sono già locali: niente service worker
+    const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+    if ('serviceWorker' in navigator && !isNative) {
       window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
     }
   </script>
+  <script src="js/native-back.js"></script>
 </body>
 </html>

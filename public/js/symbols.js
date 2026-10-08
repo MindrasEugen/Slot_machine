@@ -223,10 +223,10 @@ window.EgittoSymbols = (() => {
   // — Task 11: immagini SVG dettagliate con fallback vettoriale —
   // — Task 18 (zero SVG sui rulli): 4 ALTI con badge + 4 BASSI plain
   //   (stesso motivo, valore dallo sfondo) + Wild + Anubis a colonna intera.
-  // — Task 22: i 4 ALTI diventano i Gemini (Faraone/Sfinge/Piramide/Cleopatra,
+  // — Task 22: i 4 ALTI diventano miniature (Faraone/Sfinge/Piramide/Cleopatra,
   //   cornice oro propria su scacchiera finta → flag framed: contain + clip
   //   arrotondata). I plain restano i low Kemet.
-  // — Task 23: Gemini sostituiti dai 4 PNG definitivi (vera trasparenza,
+  // — Task 23: miniature sostituite dai 4 PNG definitivi (vera trasparenza,
   //   stessa cornice oro → resta il ramo framed per sicurezza).
   const symbolData = [
     { id: 'O', file: 'assets/kemet/faraone.png', emoji: '👑', framed: true },
@@ -306,7 +306,7 @@ window.EgittoSymbols = (() => {
     } catch (e) { return null; }
   }
   // Task 22: clip arrotondata (con fallback manuale per browser datati) —
-  // serve ai Gemini: la scacchiera finta agli angoli va tagliata via.
+  // serve alle immagini con scacchiera finta: gli angoli vanno tagliati via.
   function roundClip(ctx, x, y, w, h, r) {
     ctx.beginPath();
     if (typeof ctx.roundRect === 'function') {
@@ -323,7 +323,7 @@ window.EgittoSymbols = (() => {
   }
 
   // Task 19: COVER — l'arte (già trimmata) riempie il riquadro.
-  // Task 22: via di mezzo — box al 90% della cella; i framed (Gemini) in
+  // Task 22: via di mezzo — box al 90% della cella; i framed (miniature) in
   // contain con clip arrotondata (hanno già la cornice oro disegnata).
   // Ritorna false se l'immagine non è disponibile.
   function drawPng(ctx, id, cx, cy, size) {

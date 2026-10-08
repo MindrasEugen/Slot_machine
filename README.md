@@ -3,7 +3,7 @@
 🎰 **Gioca online**: https://slot-machine-g6qm.onrender.com/
 
 Slot machine web-based a tema Antico Egitto, distribuita come **PWA** (link diretto, nessuna app store).
-Solo **moneta virtuale**: puro intrattenimento, senza denaro reale né vincite convertibili.
+Solo **moneta virtuale**: si vincono solo monete senza valore in denaro, non riscattabili né convertibili. Riservato ai maggiori di 18 anni.
 
 ## Caratteristiche
 
